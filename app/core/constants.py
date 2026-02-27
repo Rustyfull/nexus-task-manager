@@ -17,7 +17,7 @@ class TaskStatusEnum(str, Enum):
     CANCELLED = "cancelled"
     
     
-class TaskPriority(str,Enum):
+class TaskPriorityEnum(str,Enum):
     """Task priority levels."""
     LOW = "low"
     MEDIUM = "medium"
@@ -45,6 +45,6 @@ ERROR_MESSAGES = {
     "FORBIDDEN":"Insufficent permissions",
     "NOT_FOUND":"Resource not found",
     "DUPLICATE":"Resource already exists",
-    "INVALID_CREDENTIALS":"invalid credentials",
+    "INVALID_CREDENTIALS":"Invalid credentials",
     "TOKEN_EXPIRED":"Token expired",
 }
