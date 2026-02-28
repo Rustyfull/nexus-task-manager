@@ -78,7 +78,7 @@ class SecurityService:
     def decode_token(token:str) -> Optional[dict]:
         """Decode and validate a JWT token."""
         try:
-            payload = jwt.encode(
+            payload = jwt.decode(
                 token,
                 settings.secret_key,
                 algorithms=[settings.algorithm]
