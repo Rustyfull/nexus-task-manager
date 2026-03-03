@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from watchfiles import awatch
 
 from app.repository.task_repository import TaskRepository
 from app.repository.project_repository import ProjectRepository
 from app.core.constants import TaskStatusEnum, RoleEnum
+from app.schemas import TaskResponse
 
 
 class TaskService:
@@ -72,11 +72,13 @@ class TaskService:
         
         tasks = await self.task_repo.get_project_tasks(project_id=project_id,skip=skip,limit=limit,status=status)
         total = await self.task_repo.get_project_tasks_count(project_id,status)
+
+        task_items = [TaskResponse.model_validate(t) for t in tasks]
         return {
             "total":total,
             "skip":skip,
             "limit":limit,
-            "items":tasks
+            "items":task_items
         }
         
         

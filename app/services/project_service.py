@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repository.project_repository import ProjectRepository
 from app.core.constants import ProjectStatusEnum, RoleEnum
+from app.schemas import ProjectResponse
 
 
 class ProjectService:
@@ -42,12 +43,13 @@ class ProjectService:
         """List projects owned by user."""
         projects = await self.repo.get_user_projects(user_id=user_id, skip=skip,limit=limit)
         total = await self.repo.get_user_projects_count(user_id=user_id)
-        
+
+        project_items = [ProjectResponse.model_validate(p) for p in projects]
         return {
             "total":total,
             "skip":skip,
             "limit":limit,
-            "items":projects
+            "items":project_items
         }
         
         

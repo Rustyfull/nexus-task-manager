@@ -1,7 +1,7 @@
-from typing import Any, Coroutine, Sequence
+from typing import  Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, desc, Row, RowMapping
+from sqlalchemy import select, func, and_, desc
 from app.models.task import Task
 from app.core.constants import TaskStatusEnum, TaskPriorityEnum
 

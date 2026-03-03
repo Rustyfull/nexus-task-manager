@@ -1,6 +1,7 @@
+from typing import  Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
-from sqlalchemy.orm import selectinload
 from app.models.user import User
 from app.core.constants import RoleEnum
 
@@ -36,7 +37,7 @@ class UserRepository:
     
     async def get_by_id(self,user_id:int) -> User | None:
         """Get user by ID."""
-        stmt = select(User).where(User.id == user_id).wher(User.is_active == True)
+        stmt = select(User).where(User.id == user_id).where(User.is_active == True)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
     
@@ -82,7 +83,7 @@ class UserRepository:
         return True
     
     
-    async def list_all(self, skip:int = 0, limit:int = 100) -> list[User]:
+    async def list_all(self, skip:int = 0, limit:int = 100) -> Sequence[User]:
         """List all active users with pagination"""
         stmt = (
             select(User)
@@ -95,8 +96,8 @@ class UserRepository:
         return result.scalars().all()    
     
     
-    def count_all(self) -> int:
+    async def count_all(self) -> int:
         """Count total active users."""
         stmt = select(func.count(User.id)).where(User.is_active == True)
         result = await self.session.execute(stmt)
-        return result
+        return result.scalar()

@@ -42,6 +42,10 @@ class UserResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+class UserUpdate(BaseModel):
+    full_name:Optional[str] = None
         
         
         
@@ -96,7 +100,7 @@ class TaskResponse(BaseModel):
     status:TaskStatusEnum
     priority:TaskPriorityEnum
     project_id:int
-    assignee_id:Optional[id]
+    assignee_id:Optional[int]
     due_date:Optional[datetime]
     created_at: datetime
     updated_at: datetime

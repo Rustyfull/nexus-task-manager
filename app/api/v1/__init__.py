@@ -8,5 +8,5 @@ api_v1_router.include_router(users.router)
 api_v1_router.include_router(auth.router)
 api_v1_router.include_router(tasks.router)
 api_v1_router.include_router(projects.router)
-api_v1_router.include_router(tasks.router)
+api_v1_router.include_router(health.router)
 

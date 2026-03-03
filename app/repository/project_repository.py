@@ -1,5 +1,7 @@
+from typing import Any, Coroutine, Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, Row, RowMapping
 from app.models.project import Project
 from app.models.project_member import ProjectMember
 from app.core.constants import ProjectStatusEnum
@@ -46,7 +48,7 @@ class ProjectRepository:
         user_id:int,
         skip:int = 0,
         limit:int = 100
-    ) -> list[Project]:
+    ) -> Sequence[Project]:
         """Get all projects owned by user."""
         stmt = (
             select(Project).where(Project.owner_id == user_id).offset(skip).limit(limit=limit)
@@ -72,7 +74,7 @@ class ProjectRepository:
         user_id:int,
         skip:int = 0,
         limit:int = 100
-    ) -> list[Project]:
+    ) -> Sequence[Project]:
         """Get projects where user is a member."""
         stmt = (
             select(Project)

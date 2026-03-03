@@ -1,9 +1,8 @@
-from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repository.user_repository import UserRepository
 from app.core.security import get_security_service
-from app.core.constants import RoleEnum, ERROR_MESSAGES
-from app.schemas import UserCreate, TokenResponse
+from app.core.constants import RoleEnum
+from app.schemas import UserCreate
 
 
 
@@ -20,7 +19,7 @@ class AuthService:
     ) -> dict:
         """Register a new user."""
         # Check if email already exists
-        existing_user = await self.repo.get_by_email(user_data.email)
+        existing_user = await self.repo.get_by_email(str(user_data.email))
         if existing_user:
             raise ValueError("Email already registered")
         
@@ -33,7 +32,7 @@ class AuthService:
         # Hash password and create user
         hashed_password = get_security_service().hashpassword(user_data.password)
         user  = await self.repo.create(
-            email=user_data.email,
+            email=str(user_data.email),
             username=user_data.username,
             hashed_password=hashed_password,
             full_name=user_data.full_name,

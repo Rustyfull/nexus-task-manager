@@ -15,10 +15,9 @@ class Project(BaseModel):
     
     # Relationships
     owner = relationship("User", back_populates="projects")
-    tasks = relationship("Task", back_populates="project", cascade="all, delete orphan")
+    tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")
     members = relationship("ProjectMember", back_populates="project", cascade="all, delete-orphan")
-    
-    
+
     __table_args__ = (
-        Index("ix_project_owner_status", "owner_id", "status")
+        Index("ix_project_owner_status", "owner_id", "status"),
     )

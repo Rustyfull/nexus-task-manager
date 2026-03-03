@@ -23,8 +23,8 @@ class Task(BaseModel):
     assignee = relationship("User", back_populates="tasks")
     
     
-    __table_args__ = {
+    __table_args__ = (
         Index("ix_task_project_status", "project_id", "status"),
         Index("ix_task_assignee", "assignee_id"),
         Index("ix_task_due_date", "due_date")
-    }
+    )

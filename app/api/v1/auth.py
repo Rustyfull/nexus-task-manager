@@ -4,7 +4,7 @@ from app.core.database import get_session
 from app.schemas import UserCreate, TokenRequest, TokenResponse, TokenRefreshRequest, ErrorResponse
 from app.services.auth_service import AuthService
 
-router = APIRouter(prefix="auth", tags=["authentication"])
+router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 @router.post(

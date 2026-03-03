@@ -14,5 +14,12 @@ class User(BaseModel):
     role = Column(SQLEnum(RoleEnum), default=RoleEnum.USER,nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
+
+    # Relationships
+    projects = relationship("Project", back_populates="owner", cascade="all, delete-orphan")
+    tasks = relationship("Task", back_populates="assignee", cascade="all, delete-orphan")
+    project_memberships = relationship("ProjectMember", back_populates="user", cascade="all, delete-orphan")
     
-    
+    __table_args__ = (
+        Index("ix_user_email_active", "email", "is_active"),
+    )

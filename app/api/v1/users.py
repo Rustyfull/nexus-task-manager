@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_session
 from app.api.dependencies import get_current_user, get_admin_user
-from app.schemas import UserResponse
+from app.schemas import UserResponse, UserUpdate
 from app.core.constants import ERROR_MESSAGES
 from app.services.user_service import  UserService
 
@@ -60,7 +60,7 @@ async def list_users(
 @router.put("/{user_id}",response_model=UserResponse)
 async def update_user_profile(
         user_id: int,
-        full_name:str | None = None,
+        userUpdate:UserUpdate,
         session: AsyncSession = Depends(get_session),
         current_user = Depends(get_current_user)
 
@@ -72,7 +72,7 @@ async def update_user_profile(
             detail=ERROR_MESSAGES["UNAUTHORIZED"]
         )
     service = UserService(session)
-    user = await service.update_user_profile(user_id,full_name=full_name)
+    user = await service.update_user_profile(user_id,**userUpdate.model_dump(exclude_unset=True))
 
     return user
 

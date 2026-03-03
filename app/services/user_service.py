@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repository.user_repository import UserRepository
 from app.core.constants import RoleEnum
+from app.schemas import UserResponse
 
 
 class UserService:
@@ -26,12 +27,14 @@ class UserService:
         """List all users with pagination."""
         users = await self.repo.list_all(skip=skip, limit=limit)
         total = await self.repo.count_all()
+
+        user_items = [UserResponse.model_validate(u) for u in users]
         
         return {
             "total":total,
             "skip":skip,
             "limit":limit,
-            "items":users
+            "items":user_items
         }
         
         
@@ -46,7 +49,8 @@ class UserService:
         allowed_fields = {"full_name"}
         filtered_kwargs = {
             k:v for k, v in kwargs.items() if k in allowed_fields and v is not None
-        }    
+        }
+
         
         if not filtered_kwargs:
             return await self.repo.get_by_id(user_id=user_id)
