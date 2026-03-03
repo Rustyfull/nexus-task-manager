@@ -1,10 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from watchfiles import awatch
+
 from app.repository.task_repository import TaskRepository
 from app.repository.project_repository import ProjectRepository
 from app.core.constants import TaskStatusEnum, RoleEnum
 
 
-class TaskService_
+class TaskService:
     """Task business logic layer."""
     
     def __init__(self, session: AsyncSession):
@@ -35,7 +37,7 @@ class TaskService_
         
         return await self.task_repo.create(
             title=title,
-            project_id=project,
+            project_id=project_id,
             description=description,
             priority=priority,
             assignee_id=assignee_id,
@@ -125,10 +127,35 @@ class TaskService_
         
         filtered_kwargs = {
             k:v for k, v in kwargs.items()
-            if k ib ["title", "description","status","priority","due_date","assignee_id"] and v is not None
+            if k in ["title", "description","status","priority","due_date","assignee_id"] and v is not None
         }
         
         return await self.task_repo.update(task_id=task_id, **filtered_kwargs)
+
+
+    async def delete_task(
+            self,
+            task_id: int,
+            user_id:int,
+            user_role: RoleEnum
+                          ):
+        """Delete task with authorization."""
+        task = await self.task_repo.get_by_id(task_id)
+        if not task:
+            return False
+
+        project = await self.project_repo.get_by_id(
+            task.project_id
+        )
+        if not project:
+            return False
+
+        # Only project owner or admin can delete
+        if project.owner_id != user_id and user_role != RoleEnum.ADMIN:
+            raise PermissionError("Not authorized to delete this task")
+
+        return await self.task_repo.delete(task_id)
+
     
     
     

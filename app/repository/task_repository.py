@@ -1,5 +1,7 @@
+from typing import Any, Coroutine, Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, desc
+from sqlalchemy import select, func, and_, desc, Row, RowMapping
 from app.models.task import Task
 from app.core.constants import TaskStatusEnum, TaskPriorityEnum
 
@@ -48,7 +50,7 @@ class TaskRepository:
         skip:int = 0,
         limit:int = 100,
         status:TaskStatusEnum | None = None
-    ) -> list[Task]:
+    ) -> Sequence[Task]:
         """Get all tasks in a project with optional status filter."""
         stmt = select(Task).where(Task.project_id == project_id)
         
@@ -61,7 +63,7 @@ class TaskRepository:
     
     
     
-    async def get_project_task_count(
+    async def get_project_tasks_count(
         self,
         project_id:int,
         status:TaskStatusEnum | None = None
@@ -83,7 +85,7 @@ class TaskRepository:
         skip:int = 0,
         limit:int = 100,
         status:TaskStatusEnum | None = None
-    ) -> list[Task]:
+    ) -> Sequence[Task]:
         """Get all tasks assigned to a user."""
         stmt = select(Task).where(Task.assignee_id == user_id)
         
@@ -102,7 +104,7 @@ class TaskRepository:
         **kwargs
     ) -> Task | None:
         """Delete a task."""
-        task = await self.get_by_id(task)
+        task = await self.get_by_id(task_id)
         if not task:
             return None
         
@@ -120,7 +122,7 @@ class TaskRepository:
     async def delete(
         self,
         task_id:int
-    ) -> bool:
+    ) -> bool | None:
         """Delete a task."""
         task = await self.get_by_id(task_id=task_id)
         if not task:

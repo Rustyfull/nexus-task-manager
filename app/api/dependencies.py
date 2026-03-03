@@ -48,8 +48,26 @@ async def get_current_user(
 
 
 
-async def get_admin_role(
+async def get_admin_user(
     current_user=Depends(get_current_user)
 ):
     """Dependency to ensure user is admin"""
+    if current_user.role != RoleEnum.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=ERROR_MESSAGES["FORBIDDEN"]
+        )
+    return current_user
 
+
+
+def require_role(*roles:RoleEnum):
+    """Dependency factory to require specific roles."""
+    async def role_checker(current_user=Depends(get_current_user)):
+        if current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=ERROR_MESSAGES["FORBIDDEN"]
+            )
+        return current_user
+    return role_checker
